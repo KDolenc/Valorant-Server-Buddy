@@ -1,0 +1,9 @@
+{
+    "api_url": "https://api.henrikdev.xyz/valorant/",
+    "api_subdirectory_account_data": "v2/by-puuid/mmr/",
+    "api_subdirectory_puuid": "v2/mmr/",
+    "region": "ap/",
+
+    "accounts_data_path": "valoranttrackerpackage/accounts_data.json",
+    "saves_path": "valoranttrackerpackage/saves/"
+}
