@@ -37,8 +37,10 @@ Returns a list of dictionaries of each account within the chosen account group.
 
 ### add_account(account_group, user, username, tag)
 Adds a new user to the chosen account group.\
-Must provide the account group, a name for the account, and the desired username/tag.
+Must provide the account group, a name for the account, and the desired username/tag.\
+Can return errors "failed to find account_group" and "failed to find account".
 
 ### remove_account(account_group, user)
 Removes an account from the chosen account group.\
-Must provide the account group and the user's name.
+Must provide the account group and the user's name.\
+Can return errors "failed to find account_group" and "failed to find account".

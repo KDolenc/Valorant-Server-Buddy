@@ -112,11 +112,23 @@ def remove_account_group():
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
 def add_account(account_group, user, username, tag):
+    # Check if the account_group provided is valid.
+    accounts_data = open_accounts_data()
+    try: 
+        accounts_data[account_group]
+    # Returns an error if the account_group provided isnt valid.
+    except:
+        return "failed to find account_group"
+
     # Find new_account_data for the new account.
     # Only doing this to get the puuid from the provided username/tag.
     request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_puuid") + get_setting("region") + username + '/' + tag)
     data = request.text
     new_account_data = json.loads(data)
+
+    # Returns an error if failed to retrieve player data.
+    if new_account_data["status"] != 200:
+        return "failed to find account"
 
     # The puuid then needs to be put through our request_account_data() function to get the rest of the data we're after.
     new_account_puuid = new_account_data["data"]["puuid"]
@@ -125,7 +137,7 @@ def add_account(account_group, user, username, tag):
     # With the rest of the data we can construct a dictionary for the new_account.
     new_account = {
         "puuid": new_account_puuid,
-        "user": user,
+        "user": user.capitalize(),
         "username": new_account_data["data"]["name"],
         "tag": new_account_data["data"]["tag"],
         "elo": new_account_data["data"]["current_data"]["elo"],
@@ -134,7 +146,7 @@ def add_account(account_group, user, username, tag):
     }
 
     # Save what we have in accounts_data.json to a temporary "account_data" variable.
-    accounts_data = accounts_data
+    accounts_data = open_accounts_data()
 
     # Add our new_accout to the temporary accounts_data variable.
     # accounts_data should now contain all mains/smurf accounts, including our new_account.
@@ -151,18 +163,30 @@ def add_account(account_group, user, username, tag):
 # Removes an account from the chosen account group.
 # Must provide the account group and the user's name.
 def remove_account(account_group, user):
+    # Check if the account_group provided is valid.
+    accounts_data = open_accounts_data()
+    try: 
+        accounts_data[account_group]
+    # Returns an error if the account_group provided isnt valid.
+    except:
+        return "failed to find account_group"
+
     # Save what we have in accounts_data.json to a temporary "accounts_data" variable.
     accounts_data = open_accounts_data()
 
     # Finds where in accounts_data the requested user is.
     i = 0
     for account in accounts_data[account_group]:
-        if account["user"] == user:
+        if account["user"].lower() == user:
             break
         i += 1
 
-    # Remove the requested user from the account_data variable.    
-    accounts_data[account_group].pop(i)
+    # Remove the requested user from the account_data variable.
+    try:
+        accounts_data[account_group].pop(i)
+    # Error if the account isn't in accounts_group.
+    except:
+        return "failed to find account"
 
     # Save to accounts_data.json.
     write_to_accounts_data(accounts_data)
