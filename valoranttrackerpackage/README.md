@@ -4,6 +4,10 @@ Made by Kiel Dolenc 15/04/2024
 ## Description
 A package to request and save the data of Valorant accounts.
 
+## Setup
+A txt file called "api-key.txt" will need to be made in the "valoranttackerpackage" folder.\
+The file must contain your API key from https://henrikdev.xyz/.
+
 ## Information
 Accounts and their data are stored in the accounts_data.json file.\
 There are 2 account groups in this json file, "mains" and "smurfs".\

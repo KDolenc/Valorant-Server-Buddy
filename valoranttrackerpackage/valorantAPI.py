@@ -3,6 +3,12 @@ from datetime import date
 import requests
 import json
 
+def get_api_key():
+    key_file = open("valoranttrackerpackage/api-key.txt", 'r')
+    key = key_file.read()
+    key_file.close()
+    return key
+
 # Retrieves the value of a setting in the settings.json file.
 def get_setting(setting):
     settings_file = open("valoranttrackerpackage/settings.json", "r")
@@ -31,7 +37,7 @@ def open_accounts_data():
 
 # Retrieves account data from the api.henrikdev.xyz.
 def request_account_data(puuid):
-    request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_account_data") + get_setting("region") + puuid)
+    request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_account_data") + get_setting("region") + puuid + "?api_key=" + get_api_key())
     data = request.text
     loaded = json.loads(data)
 
@@ -73,7 +79,7 @@ def update_accounts_data(account_group):
             account["elo"] = account_data["data"]["current_data"]["elo"]
             account["current_rank"] = account_data["data"]["current_data"]["currenttierpatched"]
             account["highest_rank"] = account_data["data"]["highest_rank"]["patched_tier"]
-
+    
     # Sort the updated data by elo.
     accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
 
@@ -122,7 +128,7 @@ def add_account(account_group, user, username, tag):
 
     # Find new_account_data for the new account.
     # Only doing this to get the puuid from the provided username/tag.
-    request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_puuid") + get_setting("region") + username + '/' + tag)
+    request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_puuid") + get_setting("region") + username + '/' + tag + "?api_key=" + get_api_key)
     data = request.text
     new_account_data = json.loads(data)
 
