@@ -3,12 +3,6 @@ from datetime import date
 import requests
 import json
 
-def get_api_key():
-    key_file = open("valoranttrackerpackage/api-key.txt", 'r')
-    key = key_file.read()
-    key_file.close()
-    return key
-
 # Retrieves the value of a setting in the settings.json file.
 def get_setting(setting):
     settings_file = open("valoranttrackerpackage/settings.json", "r")
@@ -16,6 +10,14 @@ def get_setting(setting):
     settings_file.close()
 
     return data[setting]
+
+# Retrieves the Valorant API key (from https://henrikdev.xyz/).
+def get_api_key():
+    key_file = open(get_setting("api_key_path"), 'r')
+    key = key_file.read()
+    key_file.close()
+    
+    return key
 
 # Opens accounts_data.json, saves what is given and closes the file.
 def write_to_accounts_data(data):
@@ -29,7 +31,14 @@ def create_accounts_data_file():
 
 # Opens/closes accounts_data.json and returns the data.
 def open_accounts_data():
-    accounts_file = open(get_setting("accounts_data_path"), "r")
+    # Try and open/save current accounts file to the "data" variable.
+    try:
+        accounts_file = open(get_setting("accounts_data_path"), "r")
+    # If this is unsuccessful (because the accounts_data.json doesn't exist/can't be located), we create a new empty accounts_data.json file and try again.
+    except:
+        create_accounts_data_file()
+        accounts_file = open(get_setting("accounts_data_path"), "r")
+    
     accounts_data = json.load(accounts_file)
     accounts_file.close()
 
@@ -53,14 +62,7 @@ def sort_by_elo(account):
 
 # Updates an account group with current data.
 def update_accounts_data(account_group):
-    # Try and open/save current accounts file to the "data" variable.
-    try:
-        accounts_data = open_accounts_data()
-    # If this is unsuccessful (because the accounts_data.json doesn't exist/can't be located), we create a new empty accounts_data.json file and try again.
-    except:
-        create_accounts_data_file()
-        
-        accounts_data = open_accounts_data()
+    accounts_data = open_accounts_data()
 
     # Loop through all accounts within the account group.
     # Update username, tag, elo, current and highest rank with newly downloaded data.
@@ -118,17 +120,9 @@ def remove_account_group():
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
 def add_account(account_group, user, username, tag):
-    # Try and open/save current accounts file to the "data" variable.
-    try:
-        accounts_data = open_accounts_data()
-    # If this is unsuccessful (because the accounts_data.json doesn't exist/can't be located), we create a new empty accounts_data.json file and try again.
-    except:
-        create_accounts_data_file()
-        
-        accounts_data = open_accounts_data()
+    accounts_data = open_accounts_data()
         
     # Check if the account_group provided is valid.
-    accounts_data = open_accounts_data()
     try: 
         accounts_data[account_group]
     # Returns an error if the account_group provided isnt valid.
