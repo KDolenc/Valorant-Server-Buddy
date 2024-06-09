@@ -128,7 +128,7 @@ def add_account(account_group, user, username, tag):
 
     # Find new_account_data for the new account.
     # Only doing this to get the puuid from the provided username/tag.
-    request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_puuid") + get_setting("region") + username + '/' + tag + "?api_key=" + get_api_key)
+    request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_puuid") + get_setting("region") + username + '/' + tag + "?api_key=" + get_api_key())
     data = request.text
     new_account_data = json.loads(data)
 
