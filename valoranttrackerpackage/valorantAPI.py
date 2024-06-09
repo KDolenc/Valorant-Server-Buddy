@@ -118,6 +118,15 @@ def remove_account_group():
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
 def add_account(account_group, user, username, tag):
+    # Try and open/save current accounts file to the "data" variable.
+    try:
+        accounts_data = open_accounts_data()
+    # If this is unsuccessful (because the accounts_data.json doesn't exist/can't be located), we create a new empty accounts_data.json file and try again.
+    except:
+        create_accounts_data_file()
+        
+        accounts_data = open_accounts_data()
+        
     # Check if the account_group provided is valid.
     accounts_data = open_accounts_data()
     try: 
