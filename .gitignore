@@ -1,6 +1,8 @@
 __pycache__/
 
-token.txt
-api-key.txt
+valoranttrackerpackage/saves/
+
+discord-token.txt
+HDEV-api-key.txt
 
 accounts_data.json

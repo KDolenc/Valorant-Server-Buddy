@@ -4,7 +4,8 @@
     "api_subdirectory_puuid": "v2/mmr/",
     "region": "ap/",
 
-    "api_key_path" : "valoranttrackerpackage/api-key.txt",
-    "accounts_data_path": "valoranttrackerpackage/accounts_data.json",
-    "saves_path": "valoranttrackerpackage/saves/"
+    "saves_path": "valoranttrackerpackage/saves/",
+    
+    "HDEV_api_key_path" : "valoranttrackerpackage/HDEV-api-key.txt",
+    "accounts_data_path": "valoranttrackerpackage/accounts_data.json"
 }

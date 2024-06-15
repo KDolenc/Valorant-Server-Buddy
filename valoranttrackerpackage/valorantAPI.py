@@ -1,5 +1,5 @@
 from datetime import date
-
+import os
 import requests
 import json
 
@@ -13,7 +13,7 @@ def get_setting(setting):
 
 # Retrieves the Valorant API key (from https://henrikdev.xyz/).
 def get_api_key():
-    key_file = open(get_setting("api_key_path"), 'r')
+    key_file = open(get_setting("HDEV_api_key_path"), 'r')
     key = key_file.read()
     key_file.close()
     
@@ -62,7 +62,13 @@ def sort_by_elo(account):
 
 # Updates an account group with current data.
 def update_accounts_data(account_group):
+    # Opens the accounts_data.json file and checks if the given account group exists.
+    # If not, returns an error.
     accounts_data = open_accounts_data()
+    try:
+        accounts_data[account_group]
+    except:
+        return "failed to find account_group"
 
     # Loop through all accounts within the account group.
     # Update username, tag, elo, current and highest rank with newly downloaded data.
@@ -91,6 +97,11 @@ def update_accounts_data(account_group):
 # Saves the current "accounts_data.json" file to the "valoranttrackerpackage/saves/{current date}.json" file.
 # Will overwrite if there is already a file made on the same date.
 def save_accounts_data():
+    # Check if save folder exists.
+    # If not, create a new saves folder.
+    if os.path.exists(os.path.abspath(os.getcwd()) + '/' + get_setting("saves_path")) != True:
+        os.mkdir(get_setting("saves_path"))
+
     save_location = get_setting("saves_path") + str(date.today()) + ".json"
     save_file = open(save_location, "w")
 
