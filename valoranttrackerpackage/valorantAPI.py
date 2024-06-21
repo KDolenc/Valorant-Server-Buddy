@@ -27,7 +27,7 @@ def write_to_accounts_data(data):
 
 # Create a new empty accounts_data.json file.
 def create_accounts_data_file():
-    write_to_accounts_data({"mains": [], "smurfs":[]})
+    write_to_accounts_data({})
 
 # Opens/closes accounts_data.json and returns the data.
 def open_accounts_data():
@@ -94,7 +94,7 @@ def update_accounts_data(account_group):
     # Overwrite the accounts file with the changes in the "data" variable.
     write_to_accounts_data(accounts_data)
 
-# Saves the current "accounts_data.json" file to the "valoranttrackerpackage/saves/{current date}.json" file.
+# Saves the current accounts_data.json file to the "valoranttrackerpackage/saves/{current date}.json" file.
 # Will overwrite if there is already a file made on the same date.
 def save_accounts_data():
     # Check if save folder exists.
@@ -120,13 +120,39 @@ def get_accounts_data(account_group):
         
     return accounts
 
-# Not implemented yet.
-def add_account_group():
+# To be implemented.
+def get_account_groups():
     pass
 
-# Not implemented yet.
-def remove_account_group():
-    pass
+# Adds a new account group to accounts_data.json.
+def add_account_group(group_name):
+    accounts_data = open_accounts_data()
+
+    # Checks if the account group is already in accounts_data.json.
+    # If so, return an error.
+    try:
+        accounts_data[group_name]
+        return "account_group already exists"
+    except:
+        pass
+
+    # Create new account group and saves to accounts_data.json.
+    accounts_data[group_name] = []
+    write_to_accounts_data(accounts_data)
+
+# Removes an account group from accounts_data.json.
+def remove_account_group(group_name):
+    accounts_data = open_accounts_data()
+    
+    # Returns an error if the account_group doensn't exist.
+    try:
+        accounts_data[group_name]
+    except:
+        return "failed to find account_group"
+
+    # Removes the account_group and saves to accounts_data.json.
+    accounts_data.pop(group_name)
+    write_to_accounts_data(accounts_data)
 
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
@@ -210,3 +236,5 @@ def remove_account(account_group, user):
 
     # Save to accounts_data.json.
     write_to_accounts_data(accounts_data)
+
+print(get_account_groups())
