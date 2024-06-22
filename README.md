@@ -17,9 +17,10 @@ The file must contain your API key from https://henrikdev.xyz/.
 ## Commands
 Commands are not case sensitive.\
 Commands must start with "!valorant".
+- Elos [account_group]
+- Ranks [account_group]
 - Add [account_group] [user] [username] [tag].
 - Remove [account_group] [user].
-- Elos - Posts elos of accounts within the "mains" account group.
-- Ranks - Posts ranks of accounts within the "mains" account group.
-- Smurfs - Posts ranks of accounts within the "smurfs" account group.
-- Help - Posts a list of commands.
+- Addgroup [account_group]
+- Removegroup [account_group]
+- Help

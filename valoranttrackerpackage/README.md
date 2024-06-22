@@ -48,3 +48,13 @@ Can return errors "failed to find account_group" and "failed to find account".
 Removes an account from the chosen account group.\
 Must provide the account group and the user's name.\
 Can return errors "failed to find account_group" and "failed to find account".
+
+### add_account_group(account_group)
+Adds a new account group.\
+Must provide a name for the new account group.\
+Can return error "account_group already exists".
+
+### remove_account_group(account_group)
+Removes an account group.\
+Must the account group's name.\
+Can return error "failed to find account_group".

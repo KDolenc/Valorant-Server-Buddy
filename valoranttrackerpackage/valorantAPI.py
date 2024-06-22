@@ -124,36 +124,6 @@ def get_accounts_data(account_group):
 def get_account_groups():
     pass
 
-# Adds a new account group to accounts_data.json.
-def add_account_group(group_name):
-    accounts_data = open_accounts_data()
-
-    # Checks if the account group is already in accounts_data.json.
-    # If so, return an error.
-    try:
-        accounts_data[group_name]
-        return "account_group already exists"
-    except:
-        pass
-
-    # Create new account group and saves to accounts_data.json.
-    accounts_data[group_name] = []
-    write_to_accounts_data(accounts_data)
-
-# Removes an account group from accounts_data.json.
-def remove_account_group(group_name):
-    accounts_data = open_accounts_data()
-    
-    # Returns an error if the account_group doensn't exist.
-    try:
-        accounts_data[group_name]
-    except:
-        return "failed to find account_group"
-
-    # Removes the account_group and saves to accounts_data.json.
-    accounts_data.pop(group_name)
-    write_to_accounts_data(accounts_data)
-
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
 def add_account(account_group, user, username, tag):
@@ -237,4 +207,32 @@ def remove_account(account_group, user):
     # Save to accounts_data.json.
     write_to_accounts_data(accounts_data)
 
-print(get_account_groups())
+# Adds a new account group to accounts_data.json.
+def add_account_group(group_name):
+    accounts_data = open_accounts_data()
+
+    # Checks if the account group is already in accounts_data.json.
+    # If so, return an error.
+    try:
+        accounts_data[group_name]
+        return "account_group already exists"
+    except:
+        pass
+
+    # Create new account group and saves to accounts_data.json.
+    accounts_data[group_name] = []
+    write_to_accounts_data(accounts_data)
+
+# Removes an account group from accounts_data.json.
+def remove_account_group(group_name):
+    accounts_data = open_accounts_data()
+    
+    # Returns an error if the account_group doensn't exist.
+    try:
+        accounts_data[group_name]
+    except:
+        return "failed to find account_group"
+
+    # Removes the account_group and saves to accounts_data.json.
+    accounts_data.pop(group_name)
+    write_to_accounts_data(accounts_data)

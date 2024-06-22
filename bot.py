@@ -137,7 +137,7 @@ def remove_account_group(message_tokens):
         return "Account group not found!"
 
 def help():
-    return "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]"
+    return "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
 
 # Called when a message is recieved/read by Valorant Server Buddy.
 @bot.event
@@ -159,7 +159,21 @@ async def on_message(message):
     else:
         return
 
-    if message_tokens[0] == "add":
+    if message_tokens[0] == "elo" or message_tokens[0] == "elos":
+        try:
+            message_tokens.pop(0)
+            await message.channel.send(get_elos(message_tokens))
+        except:
+            await message.channel.send(apology)
+
+    elif message_tokens[0] == "rank" or message_tokens[0] == "ranks":
+        try:
+            message_tokens.pop(0)
+            await message.channel.send(get_ranks(message_tokens))
+        except:
+            await message.channel.send(apology)
+
+    elif message_tokens[0] == "add":
         message_tokens.pop(0)
         await message.channel.send(add_account(message_tokens))
 
@@ -174,20 +188,6 @@ async def on_message(message):
     elif message_tokens[0] == "removegroup":
         message_tokens.pop(0)
         await message.channel.send(remove_account_group(message_tokens))
-
-    elif message_tokens[0] == "elo" or message_tokens[0] == "elos":
-        try:
-            message_tokens.pop(0)
-            await message.channel.send(get_elos(message_tokens))
-        except:
-            await message.channel.send(apology)
-
-    elif message_tokens[0] == "rank" or message_tokens[0] == "ranks":
-        try:
-            message_tokens.pop(0)
-            await message.channel.send(get_ranks(message_tokens))
-        except:
-            await message.channel.send(apology)
 
     elif message_tokens[0] == "help":
         await message.channel.send(help())
