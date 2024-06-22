@@ -120,10 +120,6 @@ def get_accounts_data(account_group):
         
     return accounts
 
-# To be implemented.
-def get_account_groups():
-    pass
-
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
 def add_account(account_group, user, username, tag):
@@ -161,7 +157,7 @@ def add_account(account_group, user, username, tag):
         "highest_rank": new_account_data["data"]["highest_rank"]["patched_tier"]
     }
 
-    # Save what we have in accounts_data.json to a temporary "account_data" variable.
+    # Save what we have in accounts_data.json to a temporary "accounts_data" variable.
     accounts_data = open_accounts_data()
 
     # Add our new_accout to the temporary accounts_data variable.
@@ -197,7 +193,7 @@ def remove_account(account_group, user):
             break
         i += 1
 
-    # Remove the requested user from the account_data variable.
+    # Remove the requested user from the accounts_data variable.
     try:
         accounts_data[account_group].pop(i)
     # Error if the account isn't in accounts_group.
@@ -236,3 +232,9 @@ def remove_account_group(group_name):
     # Removes the account_group and saves to accounts_data.json.
     accounts_data.pop(group_name)
     write_to_accounts_data(accounts_data)
+
+# Returns a list of the account groups in accounts_data.json.
+def get_account_groups():
+    accounts_data = open_accounts_data()
+
+    return list(accounts_data.keys())

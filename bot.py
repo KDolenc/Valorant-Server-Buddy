@@ -16,11 +16,14 @@ def get_discord_token():
 
 # Returns a string of accounts from an account group and their current elo.
 def get_elos(message_tokens):
-    # Checks if an account group was also requested in the message.
-    # If not, default to the "mains" group.
-    account_group = "mains"
-    if len(message_tokens) == 1:
+    # Checks if an account group was requested in the message.
+    # If not, default to the first account group in accounts_data.json.
+    if len(message_tokens) > 1:
+        return "Too many tokens!"
+    elif len(message_tokens) == 1:
         account_group = message_tokens[0]
+    else:
+        account_group = valorantAPI.get_account_groups()[0]
     
     # Returns an error message if the requested account group wasn't found.
     error_code = valorantAPI.update_accounts_data(account_group)
@@ -35,11 +38,14 @@ def get_elos(message_tokens):
 
 # Returns a string of accounts from an account group and their current ranks.
 def get_ranks(message_tokens):
-    # Checks if an account group was also requested in the message.
-    # If not, default to the "mains" group.
-    account_group = "mains"
-    if len(message_tokens) == 1:
+    # Checks if an account group was requested in the message.
+    # If not, default to the first account group in accounts_data.json.
+    if len(message_tokens) > 1:
+        return "Too many tokens!"
+    elif len(message_tokens) == 1:
         account_group = message_tokens[0]
+    else:
+        account_group = valorantAPI.get_account_groups()[0]
     
     # Returns an error message if the requested account group wasn't found.
     error_code = valorantAPI.update_accounts_data(account_group)
@@ -102,7 +108,7 @@ def remove_account(message_tokens):
     else:
         return user.capitalize() + " has been removed!"
 
-# Adds a new account group to the account_data.json file.
+# Adds a new account group to the accounts_data.json file.
 def add_account_group(message_tokens):
     # Ensure there are the right amount of message tokens (2).
     if len(message_tokens) < 1:
@@ -119,7 +125,7 @@ def add_account_group(message_tokens):
     if error_code == "account_group already exists":
         return "Account group already exists!"
 
-# Removes an account group from the account_data.json file.
+# Removes an account group from the accounts_data.json file.
 def remove_account_group(message_tokens):
     # Ensure there are the right amount of message tokens (2).
     if len(message_tokens) < 1:
@@ -137,7 +143,16 @@ def remove_account_group(message_tokens):
         return "Account group not found!"
 
 def help():
-    return "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
+    # Adds a commands list to the message.
+    message = "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
+
+    # Adds a list of account groups in accounts_data.json to the message.
+    account_groups = valorantAPI.get_account_groups()
+    message += "\n## Account Groups"
+    for account in account_groups:
+        message += "\n> - " + account.capitalize()
+
+    return message
 
 # Called when a message is recieved/read by Valorant Server Buddy.
 @bot.event

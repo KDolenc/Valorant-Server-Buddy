@@ -22,11 +22,16 @@ There is also a saves directory that saves a copy of the current accounts_data.j
 Determines which region, or "shard", to look for an account on.
 Available regions are: eu, na, latam, br, ap, kr.
 
-### accounts_data_path
-Path to accounts_data.json.
-
 ### saves_path
 Path to the saves folder.
+
+### HDEV_api_key_path
+Path to the API key from https://henrikdev.xyz/.\
+Must direct to a txt file.
+
+### accounts_data_path
+Path to accounts_data.json.\
+Must direct to a json file.
 
 ## Functions
 ### update_accounts_data(account_group)
@@ -58,3 +63,6 @@ Can return error "account_group already exists".
 Removes an account group.\
 Must the account group's name.\
 Can return error "failed to find account_group".
+
+### get_account_groups():
+Returns a list of the account groups in the "accounts_data.json" file.
