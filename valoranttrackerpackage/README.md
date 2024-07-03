@@ -64,5 +64,5 @@ Removes an account group.\
 Must the account group's name.\
 Can return error "failed to find account_group".
 
-### get_account_groups():
+### get_account_groups()
 Returns a list of the account groups in the "accounts_data.json" file.
