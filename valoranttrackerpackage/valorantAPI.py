@@ -51,10 +51,12 @@ def request_account_data(puuid):
     loaded = json.loads(data)
 
     # Returns str "failed" if failed to retrieve data.
-    if loaded["status"] != 200:
+    try:
+        loaded["status"] != 200
+    except:
         return "failed"
-    else:
-        return loaded
+    
+    return loaded
 
 # Sorts the updated data by elo.
 def sort_by_elo(account):
@@ -82,11 +84,11 @@ def update_accounts_data(account_group):
             else:
                 print("Retrieved data for account:", account["user"])
 
-            account["username"] = account_data["data"]["name"]
-            account["tag"] = account_data["data"]["tag"]
-            account["elo"] = account_data["data"]["current_data"]["elo"]
-            account["current_rank"] = account_data["data"]["current_data"]["currenttierpatched"]
-            account["highest_rank"] = account_data["data"]["highest_rank"]["patched_tier"]
+                account["username"] = account_data["data"]["name"]
+                account["tag"] = account_data["data"]["tag"]
+                account["elo"] = account_data["data"]["current_data"]["elo"]
+                account["current_rank"] = account_data["data"]["current_data"]["currenttierpatched"]
+                account["highest_rank"] = account_data["data"]["highest_rank"]["patched_tier"]
     
     # Sort the updated data by elo.
     accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
