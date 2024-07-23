@@ -9,7 +9,7 @@ intents.message_content = True
 bot = discord.Client(intents=intents)
 
 # Returns the token for the bot in the discord-token.txt file.
-def get_discord_token():
+def get_discord_token() -> str:
     discord_token_file = open("discord-token.txt", 'r')
     discord_token = discord_token_file.read()
     discord_token_file.close()
@@ -17,7 +17,7 @@ def get_discord_token():
     return discord_token
 
 # Logs an incoming read message to log.txt.
-def log_message(author, message_tokens):
+def log_message(author: str, message_tokens: list[str]) -> None:
     log_file = open("logs.txt", 'a')
 
     datetimenow = datetime.now()
@@ -32,7 +32,7 @@ def log_message(author, message_tokens):
     log_file.close()
 
 # Returns a string of accounts from an account group and their current elo.
-def get_elos(message_tokens):
+def get_elos(message_tokens: list[str]) -> str:
     # Checks if an account group was requested in the message.
     # If not, default to the first account group in accounts_data.json.
     if len(message_tokens) > 1:
@@ -54,7 +54,7 @@ def get_elos(message_tokens):
     return message
 
 # Returns a string of accounts from an account group and their current ranks.
-def get_ranks(message_tokens):
+def get_ranks(message_tokens: list[str]) -> str:
     # Checks if an account group was requested in the message.
     # If not, default to the first account group in accounts_data.json.
     if len(message_tokens) > 1:
@@ -76,7 +76,7 @@ def get_ranks(message_tokens):
     return message
 
 # Adds an account to the accounts_data file.
-def add_account(message_tokens):
+def add_account(message_tokens: list[str]) -> str:
     # Ensure there are the right amount of message tokens (4).
     if len(message_tokens) < 4:
         return "Not enough tokens!"
@@ -102,7 +102,7 @@ def add_account(message_tokens):
         return user.capitalize() + " has been added!"
 
 # Removes an account from the accounts_data file.
-def remove_account(message_tokens):
+def remove_account(message_tokens: list[str]) -> str:
     # Ensure there are the right amount of message tokens (2).
     if len(message_tokens) < 2:
         return "Not enough tokens!"
@@ -126,7 +126,7 @@ def remove_account(message_tokens):
         return user.capitalize() + " has been removed!"
 
 # Adds a new account group to the accounts_data.json file.
-def add_account_group(message_tokens):
+def add_account_group(message_tokens: list[str]) -> str:
     # Ensure there are the right amount of message tokens (2).
     if len(message_tokens) < 1:
         return "Not enough tokens!"
@@ -143,7 +143,7 @@ def add_account_group(message_tokens):
         return "Account group already exists!"
 
 # Removes an account group from the accounts_data.json file.
-def remove_account_group(message_tokens):
+def remove_account_group(message_tokens: list) -> str:
     # Ensure there are the right amount of message tokens (2).
     if len(message_tokens) < 1:
         return "Not enough tokens!"
@@ -159,7 +159,7 @@ def remove_account_group(message_tokens):
     if error_code == "failed to find account_group":
         return "Account group not found!"
 
-def help():
+def help() -> str:
     # Adds a commands list to the message.
     message = "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
 
@@ -173,7 +173,7 @@ def help():
 
 # Called when a message is recieved/read by Valorant Server Buddy.
 @bot.event
-async def on_message(message):
+async def on_message(message) -> None:
     # Define apology variable for when the bot is unable to read/repond to a message.
     apology = "Sorry, I don't understand."
     
@@ -225,4 +225,5 @@ async def on_message(message):
     
     return
 
-bot.run(get_discord_token())
+if __name__ == "__main__":
+    bot.run(get_discord_token())

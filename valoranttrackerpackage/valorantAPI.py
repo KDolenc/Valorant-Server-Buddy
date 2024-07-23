@@ -4,7 +4,7 @@ import requests
 import json
 
 # Retrieves the value of a setting in the settings.json file.
-def get_setting(setting):
+def get_setting(setting: str) -> str:
     settings_file = open("valoranttrackerpackage/settings.json", "r")
     data = json.load(settings_file)
     settings_file.close()
@@ -12,7 +12,7 @@ def get_setting(setting):
     return data[setting]
 
 # Retrieves the Valorant API key (from https://henrikdev.xyz/).
-def get_api_key():
+def get_api_key() -> str:
     key_file = open(get_setting("HDEV_api_key_path"), 'r')
     key = key_file.read()
     key_file.close()
@@ -20,17 +20,17 @@ def get_api_key():
     return key
 
 # Opens accounts_data.json, saves what is given and closes the file.
-def write_to_accounts_data(data):
+def write_to_accounts_data(data: dict) -> None:
     accounts_file = open(get_setting("accounts_data_path"), "w")
     accounts_file.write(json.dumps(data, indent=4))
     accounts_file.close()
 
 # Create a new empty accounts_data.json file.
-def create_accounts_data_file():
+def create_accounts_data_file() -> None:
     write_to_accounts_data({})
 
 # Opens/closes accounts_data.json and returns the data.
-def open_accounts_data():
+def open_accounts_data() -> dict:
     # Try and open/save current accounts file to the "data" variable.
     try:
         accounts_file = open(get_setting("accounts_data_path"), "r")
@@ -45,7 +45,7 @@ def open_accounts_data():
     return accounts_data
 
 # Retrieves account data from the api.henrikdev.xyz.
-def request_account_data(puuid):
+def request_account_data(puuid: str) -> dict:
     request = requests.get(get_setting("api_url") + get_setting("api_subdirectory_account_data") + get_setting("region") + puuid + "?api_key=" + get_api_key())
     data = request.text
     loaded = json.loads(data)
@@ -59,11 +59,11 @@ def request_account_data(puuid):
     return loaded
 
 # Sorts the updated data by elo.
-def sort_by_elo(account):
+def sort_by_elo(account: dict) -> int:
     return account["elo"]
 
 # Updates an account group with current data.
-def update_accounts_data(account_group):
+def update_accounts_data(account_group: str) -> None:
     # Opens the accounts_data.json file and checks if the given account group exists.
     # If not, returns an error.
     accounts_data = open_accounts_data()
@@ -98,7 +98,7 @@ def update_accounts_data(account_group):
 
 # Saves the current accounts_data.json file to the "valoranttrackerpackage/saves/{current date}.json" file.
 # Will overwrite if there is already a file made on the same date.
-def save_accounts_data():
+def save_accounts_data() -> None:
     # Check if save folder exists.
     # If not, create a new saves folder.
     if os.path.exists(os.path.abspath(os.getcwd()) + '/' + get_setting("saves_path")) != True:
@@ -113,7 +113,7 @@ def save_accounts_data():
     save_file.close()
 
 # Returns a list of dictionaries of each account within the chosen account group.
-def get_accounts_data(account_group):
+def get_accounts_data(account_group: str) -> list[dict]:
     accounts_data = open_accounts_data()
 
     accounts = []
@@ -124,7 +124,7 @@ def get_accounts_data(account_group):
 
 # Adds a new user to the chosen account group.
 # Must provide the account group, a name for the account, and the desired username/tag.
-def add_account(account_group, user, username, tag):
+def add_account(account_group: str, user: str, username: str, tag: str) -> None:
     accounts_data = open_accounts_data()
         
     # Check if the account_group provided is valid.
@@ -176,7 +176,7 @@ def add_account(account_group, user, username, tag):
 
 # Removes an account from the chosen account group.
 # Must provide the account group and the user's name.
-def remove_account(account_group, user):
+def remove_account(account_group: str, user: str) -> None:
     # Check if the account_group provided is valid.
     accounts_data = open_accounts_data()
     try: 
@@ -206,7 +206,7 @@ def remove_account(account_group, user):
     write_to_accounts_data(accounts_data)
 
 # Adds a new account group to accounts_data.json.
-def add_account_group(group_name):
+def add_account_group(group_name: str) -> None:
     accounts_data = open_accounts_data()
 
     # Checks if the account group is already in accounts_data.json.
@@ -222,7 +222,7 @@ def add_account_group(group_name):
     write_to_accounts_data(accounts_data)
 
 # Removes an account group from accounts_data.json.
-def remove_account_group(group_name):
+def remove_account_group(group_name: str) -> None:
     accounts_data = open_accounts_data()
     
     # Returns an error if the account_group doensn't exist.
@@ -236,7 +236,7 @@ def remove_account_group(group_name):
     write_to_accounts_data(accounts_data)
 
 # Returns a list of the account groups in accounts_data.json.
-def get_account_groups():
+def get_account_groups() -> list[str]:
     accounts_data = open_accounts_data()
 
     return list(accounts_data.keys())
