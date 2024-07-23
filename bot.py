@@ -2,6 +2,8 @@ from valoranttrackerpackage import valorantAPI
 
 import discord
 
+from datetime import datetime
+
 intents = discord.Intents.default()
 intents.message_content = True
 bot = discord.Client(intents=intents)
@@ -13,6 +15,21 @@ def get_discord_token():
     discord_token_file.close()
     
     return discord_token
+
+# Logs an incoming read message to log.txt.
+def log_message(author, message_tokens):
+    log_file = open("logs.txt", 'a')
+
+    datetimenow = datetime.now()
+    datetimenow = datetimenow.strftime("%d/%m/%Y %H:%M:%S")
+    message = datetimenow + " " + author + ": "
+
+    for message_token in message_tokens:
+        message += message_token + " "
+
+    log_file.write(message + "\n")
+
+    log_file.close()
 
 # Returns a string of accounts from an account group and their current elo.
 def get_elos(message_tokens):
@@ -169,24 +186,20 @@ async def on_message(message):
     message_tokens = message.content.split()
 
     # Only read the message if it starts with "!valorant".
+    # Will also log the message in log.txt.
     if message_tokens[0] == "!valorant":
+        log_message(message.author.name, message_tokens)
         message_tokens.pop(0)
     else:
         return
 
     if message_tokens[0] == "elo" or message_tokens[0] == "elos":
-        try:
-            message_tokens.pop(0)
-            await message.channel.send(get_elos(message_tokens))
-        except:
-            await message.channel.send(apology)
+        message_tokens.pop(0)
+        await message.channel.send(get_elos(message_tokens))
 
     elif message_tokens[0] == "rank" or message_tokens[0] == "ranks":
-        try:
-            message_tokens.pop(0)
-            await message.channel.send(get_ranks(message_tokens))
-        except:
-            await message.channel.send(apology)
+        message_tokens.pop(0)
+        await message.channel.send(get_ranks(message_tokens))
 
     elif message_tokens[0] == "add":
         message_tokens.pop(0)
