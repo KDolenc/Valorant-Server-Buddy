@@ -32,7 +32,8 @@ def log_message(author: str, message_tokens: list[str]) -> None:
     log_file.close()
 
 # Returns a string of accounts from an account group and their current elo.
-def get_elos(message_tokens: list[str]) -> str:
+async def get_elos(message_tokens: list[str], channel) -> str:
+    loading_message = await channel.send("Retrieving data. This may take a moment...")
     # Checks if an account group was requested in the message.
     # If not, default to the first account group in accounts_data.json.
     if len(message_tokens) > 1:
@@ -51,10 +52,13 @@ def get_elos(message_tokens: list[str]) -> str:
     for account in valorantAPI.get_accounts_data(account_group):
         message += account["user"] + ": " + str(account["elo"]) + '\n'
 
+    await loading_message.delete()
+
     return message
 
 # Returns a string of accounts from an account group and their current ranks.
-def get_ranks(message_tokens: list[str]) -> str:
+async def get_ranks(message_tokens: list[str], channel) -> str:
+    loading_message = await channel.send("Retrieving data. This may take a moment...")
     # Checks if an account group was requested in the message.
     # If not, default to the first account group in accounts_data.json.
     if len(message_tokens) > 1:
@@ -72,6 +76,8 @@ def get_ranks(message_tokens: list[str]) -> str:
     message = "## VALORANT RANKS \n>>> "
     for account in valorantAPI.get_accounts_data(account_group):
         message += account["user"] + ": " + account["current_rank"] + '\n'
+
+    await loading_message.delete()
 
     return message
 
@@ -195,11 +201,11 @@ async def on_message(message) -> None:
 
     if message_tokens[0] == "elo" or message_tokens[0] == "elos":
         message_tokens.pop(0)
-        await message.channel.send(get_elos(message_tokens))
+        await message.channel.send(await get_elos(message_tokens, message.channel))
 
     elif message_tokens[0] == "rank" or message_tokens[0] == "ranks":
         message_tokens.pop(0)
-        await message.channel.send(get_ranks(message_tokens))
+        await message.channel.send(await get_ranks(message_tokens, message.channel))
 
     elif message_tokens[0] == "add":
         message_tokens.pop(0)
