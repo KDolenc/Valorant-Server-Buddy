@@ -62,8 +62,27 @@ def request_account_data(puuid: str) -> dict:
 def sort_by_elo(account: dict) -> int:
     return account["elo"]
 
+# Updates an account with current data.
+def update_account_data(account: list) -> list:
+    account_data = request_account_data(account["puuid"])
+
+    # Skips updating the account if failed to retrieve data from the API.
+    if account_data == "failed":
+        print("Failed to retrieve data for account:", account["user"])
+        return account
+    else:
+        print("Retrieved data for account:", account["user"])
+
+        account["username"] = account_data["data"]["name"]
+        account["tag"] = account_data["data"]["tag"]
+        account["elo"] = account_data["data"]["current_data"]["elo"]
+        account["current_rank"] = account_data["data"]["current_data"]["currenttierpatched"]
+        account["highest_rank"] = account_data["data"]["highest_rank"]["patched_tier"]
+
+    return account
+
 # Updates an account group with current data.
-def update_accounts_data(account_group: str) -> None:
+def update_account_group_data(account_group: str) -> None:
     # Opens the accounts_data.json file and checks if the given account group exists.
     # If not, returns an error.
     accounts_data = open_accounts_data()
@@ -75,20 +94,7 @@ def update_accounts_data(account_group: str) -> None:
     # Loop through all accounts within the account group.
     # Update username, tag, elo, current and highest rank with newly downloaded data.
     for account in accounts_data[account_group]:
-            account_data = request_account_data(account["puuid"])
-
-            # Skips updating the account if failed to retrieve data from the API.
-            if account_data == "failed":
-                print("Failed to retrieve data for account:", account["user"])
-                continue
-            else:
-                print("Retrieved data for account:", account["user"])
-
-                account["username"] = account_data["data"]["name"]
-                account["tag"] = account_data["data"]["tag"]
-                account["elo"] = account_data["data"]["current_data"]["elo"]
-                account["current_rank"] = account_data["data"]["current_data"]["currenttierpatched"]
-                account["highest_rank"] = account_data["data"]["highest_rank"]["patched_tier"]
+            update_account_data(account)
     
     # Sort the updated data by elo.
     accounts_data[account_group].sort(reverse = True, key=sort_by_elo)

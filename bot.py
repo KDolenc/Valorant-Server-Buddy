@@ -33,7 +33,6 @@ def log_message(author: str, message_tokens: list[str]) -> None:
 
 # Returns a string of accounts from an account group and their current elo.
 async def get_elos(message_tokens: list[str], channel) -> str:
-    loading_message = await channel.send("Retrieving data. This may take a moment...")
     # Checks if an account group was requested in the message.
     # If not, default to the first account group in accounts_data.json.
     if len(message_tokens) > 1:
@@ -42,23 +41,36 @@ async def get_elos(message_tokens: list[str], channel) -> str:
         account_group = message_tokens[0]
     else:
         account_group = valorantAPI.get_account_groups()[0]
-    
+
     # Returns an error message if the requested account group wasn't found.
-    error_code = valorantAPI.update_accounts_data(account_group)
-    if error_code == "failed to find account_group":
-        return "Account group not found!"
+    if account_group not in valorantAPI.get_account_groups():
+        return "Account group not found!" 
+    
+    # Sends a loading message.
+    loading_message = await channel.send("Retrieving data: 0% Complete")
+    
+    # Updates the data within the account_group.
+    accounts_data = valorantAPI.get_accounts_data(account_group)
+    i = 0
+    for account in accounts_data:
+            valorantAPI.update_account_data(account)
+            i += 1
+            # Updates the loading message to display to show a percentage of completion.
+            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100))+ "% Complete"
+            await loading_message.edit(content=loading_text)
+
+
+    # Deletes the loading message.
+    await loading_message.delete()
 
     message = "## VALORANT ELOS \n>>> "
     for account in valorantAPI.get_accounts_data(account_group):
         message += account["user"] + ": " + str(account["elo"]) + '\n'
 
-    await loading_message.delete()
-
     return message
 
 # Returns a string of accounts from an account group and their current ranks.
 async def get_ranks(message_tokens: list[str], channel) -> str:
-    loading_message = await channel.send("Retrieving data. This may take a moment...")
     # Checks if an account group was requested in the message.
     # If not, default to the first account group in accounts_data.json.
     if len(message_tokens) > 1:
@@ -69,15 +81,28 @@ async def get_ranks(message_tokens: list[str], channel) -> str:
         account_group = valorantAPI.get_account_groups()[0]
     
     # Returns an error message if the requested account group wasn't found.
-    error_code = valorantAPI.update_accounts_data(account_group)
-    if error_code == "failed to find account_group":
-        return "Account group not found!"
+    if account_group not in valorantAPI.get_account_groups():
+        return "Account group not found!" 
+    
+    # Sends a loading message.
+    loading_message = await channel.send("Retrieving data: 0% Complete")
+    
+    # Updates the data within the account_group.
+    accounts_data = valorantAPI.get_accounts_data(account_group)
+    i = 0
+    for account in accounts_data:
+            valorantAPI.update_account_data(account)
+            i += 1
+            # Updates the loading message to display to show a percentage of completion.
+            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100))+ "% Complete"
+            await loading_message.edit(content=loading_text)
+
+    # Deletes the loading message.
+    await loading_message.delete()
 
     message = "## VALORANT RANKS \n>>> "
     for account in valorantAPI.get_accounts_data(account_group):
         message += account["user"] + ": " + account["current_rank"] + '\n'
-
-    await loading_message.delete()
 
     return message
 

@@ -34,7 +34,10 @@ Path to accounts_data.json.\
 Must direct to a json file.
 
 ## Functions
-### update_accounts_data(account_group)
+### update_account_data(account)
+Updates an account with current data.
+
+### update_account_group_data(account_group)
 Updates an account group with current data.
 
 ### save_accounts_data()
