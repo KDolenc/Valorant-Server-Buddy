@@ -63,7 +63,7 @@ def sort_by_elo(account: dict) -> int:
     return account["elo"]
 
 # Updates an account with current data.
-def update_account_data(account: list) -> list:
+def update_account_data(account: list, account_group: str) -> list:
     account_data = request_account_data(account["puuid"])
 
     # Skips updating the account if failed to retrieve data from the API.
@@ -79,6 +79,31 @@ def update_account_data(account: list) -> list:
         account["current_rank"] = account_data["data"]["current_data"]["currenttierpatched"]
         account["highest_rank"] = account_data["data"]["highest_rank"]["patched_tier"]
 
+    # Opens the accounts_data.json file and checks if the given account group exists.
+    # If not, returns an error.
+    accounts_data = open_accounts_data()
+    try:
+        accounts_data[account_group]
+    except:
+        return "failed to find account_group"
+
+    # Applies changes to "accounts_data" variable from "account" variable.
+    for acc in accounts_data[account_group]:
+        if acc["puuid"] == account["puuid"]:
+            acc["username"] = account["username"]
+            acc["tag"] = account["tag"]
+            acc["elo"] = account["elo"]
+            acc["current_rank"] = account["current_rank"]
+            acc["highest_rank"] = account["highest_rank"]
+        
+    # Sort the updated data by elo.
+    accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
+
+    # Overwrite the accounts file with the changes in the "accounts_data" variable.
+    write_to_accounts_data(accounts_data)
+    
+    # Can return the account if the updated data is needed.
+    # However, not using this returned list doesn't matter, as the accounts_data.json is still updated.
     return account
 
 # Updates an account group with current data.
@@ -99,7 +124,7 @@ def update_account_group_data(account_group: str) -> None:
     # Sort the updated data by elo.
     accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
 
-    # Overwrite the accounts file with the changes in the "data" variable.
+    # Overwrite the accounts file with the changes in the "accounts_data" variable.
     write_to_accounts_data(accounts_data)
 
 # Saves the current accounts_data.json file to the "valoranttrackerpackage/saves/{current date}.json" file.
