@@ -5,7 +5,7 @@ Made by Kiel Dolenc 15/04/2024
 A package to request and save the data of Valorant accounts.
 
 ## Setup
-A txt file called "HDEV-api-key.txt" will need to be made in the "valoranttackerpackage" folder.\
+A .txt file called "HDEV-api-key.txt" will need to be made in the "valoranttackerpackage" folder.\
 The file must contain your API key from https://henrikdev.xyz/.
 
 ## Information

@@ -56,7 +56,7 @@ async def get_elos(message_tokens: list[str], channel) -> str:
             valorantAPI.update_account_data(account, account_group)
             i += 1
             # Updates the loading message to display to show a percentage of completion.
-            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100))+ "% Complete"
+            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
             await loading_message.edit(content=loading_text)
 
 
@@ -94,7 +94,7 @@ async def get_ranks(message_tokens: list[str], channel) -> str:
             valorantAPI.update_account_data(account, account_group)
             i += 1
             # Updates the loading message to display to show a percentage of completion.
-            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100))+ "% Complete"
+            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
             await loading_message.edit(content=loading_text)
 
     # Deletes the loading message.
