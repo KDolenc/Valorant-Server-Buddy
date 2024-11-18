@@ -64,7 +64,7 @@ async def get_elos(message_tokens: list[str], channel) -> str:
     await loading_message.delete()
 
     message = "## VALORANT ELOS: "
-    message += account_group.capitalize() + "\n>>> "
+    message += account_group.upper() + "\n>>> "
     for account in valorantAPI.get_accounts_data(account_group):
         message += account["user"] + ": " + str(account["elo"]) + '\n'
 
@@ -102,7 +102,7 @@ async def get_ranks(message_tokens: list[str], channel) -> str:
     await loading_message.delete()
 
     message = "## VALORANT RANKS: "
-    message += account_group.capitalize() + "\n>>> "
+    message += account_group.upper() + "\n>>> "
     for account in valorantAPI.get_accounts_data(account_group):
         message += account["user"] + ": " + account["current_rank"] + '\n'
 
