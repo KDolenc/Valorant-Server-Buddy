@@ -226,6 +226,10 @@ async def on_message(message) -> None:
     else:
         return
 
+    if len(message_tokens) == 0:
+        await message.channel.send(help())
+        return
+
     if message_tokens[0] == "elo" or message_tokens[0] == "elos":
         message_tokens.pop(0)
         await message.channel.send(await get_elos(message_tokens, message.channel))
