@@ -108,6 +108,54 @@ async def get_ranks(message_tokens: list[str], channel) -> str:
 
     return message
 
+async def get_distributions(message_tokens: list[str], channel) -> str:
+    # Checks if an account group was requested in the message.
+    # If not, default to the first account group in accounts_data.json.
+    if len(message_tokens) > 1:
+        return "Too many tokens!"
+    elif len(message_tokens) == 1:
+        account_group = message_tokens[0]
+    else:
+        account_group = valorantAPI.get_account_groups()[0]
+
+    # Returns an error message if the requested account group wasn't found.
+    if account_group not in valorantAPI.get_account_groups():
+        return "Account group not found!" 
+    
+    # Sends a loading message.
+    loading_message = await channel.send("Retrieving data: 0% Complete")
+
+    # Updates the data within the account_group.
+    accounts_data = valorantAPI.get_accounts_data(account_group)
+    i = 0
+    for account in accounts_data:
+            valorantAPI.update_account_data(account, account_group)
+            i += 1
+            # Updates the loading message to display to show a percentage of completion.
+            loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
+            await loading_message.edit(content=loading_text)
+            
+    # Deletes the loading message.
+    await loading_message.delete()
+
+    distribution_data = valorantAPI.get_distribution_data()
+
+    message = "## VALORANT RANK DISTRIBUTIONS: "
+    message += account_group.upper() + "\n>>> "
+    for account in valorantAPI.get_accounts_data(account_group):
+        actual_distribution = 0
+        for x in range(len(distribution_data)):
+            if account["current_rank"] == distribution_data[x]["rank"]:
+                current_rank_distribution = distribution_data[x]["distribution"]
+                next_rank_distribution = distribution_data[x + 1]["distribution"]
+
+                rank_progress = account["elo"] % 100
+                adjusted_distribution = (((current_rank_distribution - next_rank_distribution) / 100 * (100 - rank_progress)) + next_rank_distribution)
+
+        message += account["user"] + ": Top " + str(round(adjusted_distribution, 1)) + "%\n"
+
+    return message
+
 # Adds an account to the accounts_data file.
 def add_account(message_tokens: list[str]) -> str:
     # Ensure there are the right amount of message tokens (4).
@@ -194,7 +242,7 @@ def remove_account_group(message_tokens: list) -> str:
 
 def help() -> str:
     # Adds a commands list to the message.
-    message = "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
+    message = "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - distributions [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
 
     # Adds a list of account groups in accounts_data.json to the message.
     account_groups = valorantAPI.get_account_groups()
@@ -229,14 +277,21 @@ async def on_message(message) -> None:
     if len(message_tokens) == 0:
         await message.channel.send(help())
         return
+    
+    if message_tokens[0] == "help":
+        await message.channel.send(help())
 
-    if message_tokens[0] == "elo" or message_tokens[0] == "elos":
+    elif message_tokens[0] == "elo" or message_tokens[0] == "elos":
         message_tokens.pop(0)
         await message.channel.send(await get_elos(message_tokens, message.channel))
 
     elif message_tokens[0] == "rank" or message_tokens[0] == "ranks":
         message_tokens.pop(0)
         await message.channel.send(await get_ranks(message_tokens, message.channel))
+
+    elif message_tokens[0] == "dist" or message_tokens[0] == "dists" or message_tokens[0] == "distribution" or message_tokens[0] == "distributions":
+        message_tokens.pop(0)
+        await message.channel.send(await get_distributions(message_tokens, message.channel))
 
     elif message_tokens[0] == "add":
         message_tokens.pop(0)
@@ -253,9 +308,6 @@ async def on_message(message) -> None:
     elif message_tokens[0] == "removegroup":
         message_tokens.pop(0)
         await message.channel.send(remove_account_group(message_tokens))
-
-    elif message_tokens[0] == "help":
-        await message.channel.send(help())
 
     else:
         await message.channel.send(apology)

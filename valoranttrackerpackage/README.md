@@ -68,4 +68,7 @@ Must the account group's name.\
 Can return error "failed to find account_group".
 
 ### get_account_groups()
-Returns a list of the account groups in the "accounts_data.json" file.
+Returns a list of the account groups in accounts_data.json.
+
+### get_distribution_data()
+Returns a list of ranks distribution data in distribution_data.json.

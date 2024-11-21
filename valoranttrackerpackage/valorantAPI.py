@@ -271,3 +271,11 @@ def get_account_groups() -> list[str]:
     accounts_data = open_accounts_data()
 
     return list(accounts_data.keys())
+
+# Returns a list of ranks distribution data in distribution_data.json.
+def get_distribution_data():
+    distribution_file = open(get_setting("distribution_data_path"), "r")
+    distibution_data = json.load(distribution_file)
+    distribution_file.close()
+
+    return distibution_data
