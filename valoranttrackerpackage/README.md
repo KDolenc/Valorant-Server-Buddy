@@ -71,4 +71,4 @@ Can return error "failed to find account_group".
 Returns a list of the account groups in accounts_data.json.
 
 ### get_distribution_data()
-Returns a list of ranks distribution data in distribution_data.json.
+Returns a list of rank distribution data in distribution_data.json.

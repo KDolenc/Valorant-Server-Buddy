@@ -55,7 +55,7 @@ async def get_elos(message_tokens: list[str], channel) -> str:
     for account in accounts_data:
             valorantAPI.update_account_data(account, account_group)
             i += 1
-            # Updates the loading message to display to show a percentage of completion.
+            # Updates the loading message to display to show the completion percentage.
             loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
             await loading_message.edit(content=loading_text)
 
@@ -94,7 +94,7 @@ async def get_ranks(message_tokens: list[str], channel) -> str:
     for account in accounts_data:
             valorantAPI.update_account_data(account, account_group)
             i += 1
-            # Updates the loading message to display to show a percentage of completion.
+            # Updates the loading message to display to show the completion percentage.
             loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
             await loading_message.edit(content=loading_text)
 
@@ -122,6 +122,11 @@ async def get_distributions(message_tokens: list[str], channel) -> str:
     if account_group not in valorantAPI.get_account_groups():
         return "Account group not found!" 
     
+    # Returns an error message if the distribution data wasn't found.
+    distribution_data = valorantAPI.get_distribution_data()
+    if distribution_data == "failed to find distribution_data":
+        return "Distribution data not found!"
+    
     # Sends a loading message.
     loading_message = await channel.send("Retrieving data: 0% Complete")
 
@@ -129,27 +134,35 @@ async def get_distributions(message_tokens: list[str], channel) -> str:
     accounts_data = valorantAPI.get_accounts_data(account_group)
     i = 0
     for account in accounts_data:
-            valorantAPI.update_account_data(account, account_group)
+            #valorantAPI.update_account_data(account, account_group)
             i += 1
-            # Updates the loading message to display to show a percentage of completion.
+            # Updates the loading message to display to show the completion percentage.
             loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
             await loading_message.edit(content=loading_text)
             
     # Deletes the loading message.
     await loading_message.delete()
 
-    distribution_data = valorantAPI.get_distribution_data()
-
     message = "## VALORANT RANK DISTRIBUTIONS: "
     message += account_group.upper() + "\n>>> "
     for account in valorantAPI.get_accounts_data(account_group):
-        actual_distribution = 0
+        # If the account is Radiant then we don't calculate the distribution percentage.
+        if account["current_rank"] == "Radiant":
+            message += account["user"] + ": RADIANT\n"
+            continue
+
+        # Compares account current_rank with ranks in distribution_data.json.
         for x in range(len(distribution_data)):
+            # Once there is a match found, the account's current rank and next rank are used to find the account's adjusted distribution.
             if account["current_rank"] == distribution_data[x]["rank"]:
                 current_rank_distribution = distribution_data[x]["distribution"]
                 next_rank_distribution = distribution_data[x + 1]["distribution"]
 
+                # rank_progress is the account's elo between ranks.
                 rank_progress = account["elo"] % 100
+
+                # adjusted_distribution is calculated by finding the distributions of the current and next rank,
+                # and using the rank_progress to find the value between them that the account is sitting at.
                 adjusted_distribution = (((current_rank_distribution - next_rank_distribution) / 100 * (100 - rank_progress)) + next_rank_distribution)
 
         message += account["user"] + ": Top " + str(round(adjusted_distribution, 1)) + "%\n"

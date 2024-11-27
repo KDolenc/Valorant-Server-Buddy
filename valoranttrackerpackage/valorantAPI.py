@@ -274,8 +274,12 @@ def get_account_groups() -> list[str]:
 
 # Returns a list of ranks distribution data in distribution_data.json.
 def get_distribution_data():
-    distribution_file = open(get_setting("distribution_data_path"), "r")
-    distibution_data = json.load(distribution_file)
-    distribution_file.close()
-
+    # Returns an error if the distribution data wasn't found.
+    try:
+        distribution_file = open(get_setting("distribution_data_path"), "r")
+        distibution_data = json.load(distribution_file)
+        distribution_file.close()
+    except:
+        return "failed to find distribution_data"
+    
     return distibution_data
