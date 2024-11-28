@@ -134,7 +134,7 @@ async def get_distributions(message_tokens: list[str], channel) -> str:
     accounts_data = valorantAPI.get_accounts_data(account_group)
     i = 0
     for account in accounts_data:
-            #valorantAPI.update_account_data(account, account_group)
+            valorantAPI.update_account_data(account, account_group)
             i += 1
             # Updates the loading message to display to show the completion percentage.
             loading_text = "Retrieving data: " + str(int(i/len(accounts_data)*100)) + "% Complete"
@@ -149,6 +149,9 @@ async def get_distributions(message_tokens: list[str], channel) -> str:
         # If the account is Radiant then we don't calculate the distribution percentage.
         if account["current_rank"] == "Radiant":
             message += account["user"] + ": RADIANT\n"
+            continue
+        elif account["current_rank"] == "Unrated":
+            message += account["user"] + ": UNRATED\n"
             continue
 
         # Compares account current_rank with ranks in distribution_data.json.
