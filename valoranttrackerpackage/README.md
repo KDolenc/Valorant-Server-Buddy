@@ -22,6 +22,9 @@ There is also a saves directory that saves a copy of the current accounts_data.j
 Determines which region, or "shard", to look for an account on.
 Available regions are: eu, na, latam, br, ap, kr.
 
+### distribution_url
+url for the distributions data.
+
 ### saves_path
 Path to the saves folder.
 
@@ -31,6 +34,10 @@ Must direct to a txt file.
 
 ### accounts_data_path
 Path to accounts_data.json.\
+Must direct to a json file.
+
+### distributions_data_path
+Path to distributions_data.json.\
 Must direct to a json file.
 
 ## Functions
