@@ -55,12 +55,18 @@ def request_account_data(puuid: str) -> dict:
         loaded["status"] != 200
     except:
         return "failed"
-    
+
     return loaded
 
 # Sorts the updated data by elo.
 def sort_by_elo(account: dict) -> int:
     return account["elo"]
+
+# Returns true if the player has received a rank this act.
+def has_current_act_rating(account_data) -> bool:
+    if account_data["data"]["current_data"]["games_needed_for_rating"] > 0:
+        return False
+    return True
 
 # Updates an account with current data.
 def update_account_data(account: list, account_group: str) -> list:
@@ -95,6 +101,11 @@ def update_account_data(account: list, account_group: str) -> list:
             acc["elo"] = account["elo"]
             acc["current_rank"] = account["current_rank"]
             acc["highest_rank"] = account["highest_rank"]
+
+            # If the player hasn't received a rank this act, give them default data.
+            if has_current_act_rating(account_data) == False:
+                acc["elo"] = 0
+                acc["current_rank"] = "Unrated"
         
     # Sort the updated data by elo.
     accounts_data[account_group].sort(reverse = True, key=sort_by_elo)

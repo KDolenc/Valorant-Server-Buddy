@@ -4,7 +4,7 @@
     "api_subdirectory_puuid": "v2/mmr/",
     "region": "ap/",
 
-    "distribution_url": "https://www.esportstales.com/valorant/rank-distribution-and-percentage-of-players-by-tier",
+    "distribution_url": "https://www.vstats.gg/ranks",
 
     "saves_path": "valoranttrackerpackage/saves/",
     

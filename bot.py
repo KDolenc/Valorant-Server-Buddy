@@ -268,7 +268,7 @@ def help() -> str:
 
     return message
 
-# Called when a message is recieved/read by Valorant Server Buddy.
+# Called when a message is received/read by Valorant Server Buddy.
 @bot.event
 async def on_message(message) -> None:
     # Define apology variable for when the bot is unable to read/repond to a message.
