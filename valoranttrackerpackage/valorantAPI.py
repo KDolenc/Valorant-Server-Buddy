@@ -62,6 +62,9 @@ def request_account_data(puuid: str) -> dict:
 def sort_by_elo(account: dict) -> int:
     return account["elo"]
 
+def sort_accounts_data(accounts_data: dict, account_group: str) -> None:
+    accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
+
 # Returns true if the player has received a rank this act.
 def has_current_act_rating(account_data) -> bool:
     if account_data["data"]["current_data"]["games_needed_for_rating"] > 0:
@@ -108,7 +111,7 @@ def update_account_data(account: list, account_group: str) -> list:
                 acc["current_rank"] = "Unrated"
         
     # Sort the updated data by elo.
-    accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
+    sort_accounts_data(accounts_data, account_group)
 
     # Overwrite the accounts file with the changes in the "accounts_data" variable.
     write_to_accounts_data(accounts_data)
@@ -133,7 +136,7 @@ def update_account_group_data(account_group: str) -> None:
             update_account_data(account)
     
     # Sort the updated data by elo.
-    accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
+    sort_accounts_data(accounts_data, account_group)
 
     # Overwrite the accounts file with the changes in the "accounts_data" variable.
     write_to_accounts_data(accounts_data)
@@ -211,7 +214,7 @@ def add_account(account_group: str, user: str, username: str, tag: str) -> None:
     accounts_data[account_group] = new_account_group
 
     # Sort mains by elo.
-    accounts_data[account_group].sort(reverse = True, key=sort_by_elo)
+    sort_accounts_data(accounts_data, account_group)
 
     # Save to accounts_data.json.
     write_to_accounts_data(accounts_data)
@@ -294,3 +297,9 @@ def get_distribution_data() -> list[str]:
         return "failed to find distribution_data"
     
     return distibution_data
+
+def test() -> None:
+    request = requests.get("https://www.vstats.gg/ranks")
+    data = request.text
+
+    print(data)

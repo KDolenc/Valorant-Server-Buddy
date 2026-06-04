@@ -151,7 +151,7 @@ async def get_distributions(message_tokens: list[str], channel) -> str:
             message += account["user"] + ": RADIANT\n"
             continue
         elif account["current_rank"] == "Unrated":
-            message += account["user"] + ": UNRATED\n"
+            message += account["user"] + ": Unrated\n"
             continue
 
         # Compares account current_rank with ranks in distribution_data.json.
@@ -256,9 +256,14 @@ def remove_account_group(message_tokens: list) -> str:
     if error_code == "failed to find account_group":
         return "Account group not found!"
 
+def test() -> str:
+    valorantAPI.test()
+
+    return "test"
+
 def help() -> str:
     # Adds a commands list to the message.
-    message = "## Commands List:\n> - elos [account_group]\n> - ranks [account_group]\n> - distributions [account_group]\n> - add [account_group] [user] [username] [tag]\n> - remove [account_group] [user]\n> - addgroup [account_group]\n> - removegroup [account_group]"
+    message = "## Commands List:\n> - elos <account_group>\n> - ranks <account_group>\n> - distributions <account_group>\n> - add <account_group> <user> <username> <tag>\n> - remove <account_group> <user>\n> - addgroup <account_group>\n> - removegroup <account_group>"
 
     # Adds a list of account groups in accounts_data.json to the message.
     account_groups = valorantAPI.get_account_groups()
@@ -324,6 +329,10 @@ async def on_message(message) -> None:
     elif message_tokens[0] == "removegroup":
         message_tokens.pop(0)
         await message.channel.send(remove_account_group(message_tokens))
+
+    elif message_tokens[0] == "test":
+        message_tokens.pop(0)
+        await message.channel.send(test())
 
     else:
         await message.channel.send(apology)

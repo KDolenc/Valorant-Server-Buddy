@@ -17,11 +17,11 @@ The file must contain an API key from https://henrikdev.xyz/.
 ## Commands
 Commands are not case sensitive.\
 Commands must start with "!valorant".
-- Elos [account_group]
-- Ranks [account_group]
-- Distributions [account_group]
-- Add [account_group] [user] [username] [tag]
-- Remove [account_group] [user]
-- Addgroup [account_group]
-- Removegroup [account_group]
+- Elos <account_group>
+- Ranks <account_group>
+- Distributions <account_group>
+- Add <account_group> <user> <username> <tag>
+- Remove <account_group> <user>
+- Addgroup <account_group>
+- Removegroup <account_group>
 - Help
